@@ -1,0 +1,9 @@
+1. login dockerhub
+	docker login
+	nerdctl login
+2. create docker secret from file
+	./create-dockerconfig-secret.sh
+3. modify git-basic-auth-secret.yaml to add token
+	kubectl apply -f git-basic-auth-secret.yaml
+4. create git api token for PR
+	kubectl create secret generic github --from-literal token="TOKEN"

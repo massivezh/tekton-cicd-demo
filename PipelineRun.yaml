@@ -1,0 +1,41 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: welcome-app-pipelinerun
+spec:
+  pipelineRef:
+    name: welcome-app-pipeline
+  params:
+    - name: GIT_REPO
+      value: https://github.com/massivezh/welcome-app
+    - name: GIT_REF
+      value: main
+    - name: IMAGE_DEST
+      value: docker.io/massivezh/welcome-app
+    - name: SRC_DOCKERFILE
+      value: Containerfile
+    - name: DEPLOY_REPO
+      value: https://github.com/massivezh/welcome-deploy/
+    - name: DEPLOY_REF
+      value: main
+    - name: DEV_OVERLAY_DIR
+      value: dev
+    - name: PROD_OVERLAY_DIR
+      value: prod
+  workspaces:
+    - name: welcome-app-ws1
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi
+    - name: scratch
+      emptyDir: {}
+    - name: dockerconfig-ws
+      secret:
+        secretName: dockerconfig-secret
+    - name: gitcred-ws
+      secret:
+        secretName: git-basic-auth-secret
